@@ -7,43 +7,6 @@
 #include <vector>
 #include <iostream>
 
-// SRP: сервис управляет только бронированием
-class BookingService {
-public:
-    BookingService(std::shared_ptr<RoomRepository> roomRepo,
-                   std::shared_ptr<GuestRepository> guestRepo,
-                   std::shared_ptr<BookingRepository> bookingRepo)
-        : roomRepo(roomRepo), guestRepo(guestRepo), bookingRepo(bookingRepo) {}
-
-    double calculateCost(int bookingId) {
-        auto* booking = bookingRepo->findById(bookingId);
-        if (!booking) throw NotFoundException("Booking not found");
-        auto* room = roomRepo->findById(booking->getRoomId());
-        if (!room) throw RoomException("Room not found");
-        return booking->nights() * room->getPricePerNight();
-    }
-
-    void createBooking(int roomId, int guestId, 
-                       std::chrono::system_clock::time_point checkIn,
-                       std::chrono::system_clock::time_point checkOut) {
-        if (checkIn >= checkOut) throw ValidationException("Invalid dates");
-        auto* room = roomRepo->findById(roomId);
-        if (!room || !room->getAvailable()) throw RoomException("Room not available");
-        auto* guest = guestRepo->findById(guestId);
-        if (!guest) throw NotFoundException("Guest not found");
-
-        int newId = bookingRepo->getNextId();
-        Booking booking(newId, roomId, guestId, checkIn, checkOut);
-        bookingRepo->add(booking);
-        room->setAvailable(false);
-    }
-
-private:
-    std::shared_ptr<RoomRepository> roomRepo;
-    std::shared_ptr<GuestRepository> guestRepo;
-    std::shared_ptr<BookingRepository> bookingRepo;
-};
-
 // Отдельный сервис для отчётов (SRP)
 class ReportService {
 public:

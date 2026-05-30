@@ -2,12 +2,8 @@
 #define ENTITIES_H
 
 #include <string>
-#include <vector>
 #include <chrono>
-#include <iomanip>
-#include <sstream>
 
-// Принцип SRP: класс отвечает только за хранение данных комнаты
 class Room {
 public:
     enum class Category { STANDARD, STUDIO, APARTMENT };
@@ -20,7 +16,6 @@ public:
     double getPricePerNight() const { return pricePerNight; }
     int getMaxGuests() const { return maxGuests; }
     bool getAvailable() const { return isAvailable; }
-
     void setAvailable(bool available) { isAvailable = available; }
 
     std::string categoryToString() const {
@@ -40,7 +35,6 @@ private:
     bool isAvailable;
 };
 
-// SRP: только данные гостя
 class Guest {
 public:
     Guest(int id, std::string name, std::string phone)
@@ -56,7 +50,6 @@ private:
     std::string phone;
 };
 
-// SRP: только данные бронирования
 class Booking {
 public:
     using time_point = std::chrono::system_clock::time_point;
@@ -72,7 +65,7 @@ public:
 
     long long nights() const {
         auto diff = std::chrono::duration_cast<std::chrono::hours>(checkOut - checkIn).count();
-        return (diff + 23) / 24; // округление вверх
+        return (diff + 23) / 24;
     }
 
 private:
