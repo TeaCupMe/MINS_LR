@@ -41,6 +41,14 @@ public:
         if (it == extBookings.end()) return nullptr;
         return it->second;
     }
+    std::vector<std::shared_ptr<ExtendedBooking>> getAllBookings() const 
+    {
+        std::vector<std::shared_ptr<ExtendedBooking>> result;
+        for (const auto& pair : extBookings) {
+            result.push_back(pair.second);
+        }
+        return result;
+    }
 
 private:
     std::shared_ptr<RoomRepository> roomRepo;

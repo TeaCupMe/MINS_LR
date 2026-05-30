@@ -7,7 +7,7 @@ int main() {
     auto guestRepo = std::make_shared<GuestRepository>();
     auto bookingRepo = std::make_shared<BookingRepository>();
 
-    // Тестовые данные
+    // test data
     roomRepo->add(Room(1, Room::Category::STANDARD, 100.0, 2));
     roomRepo->add(Room(2, Room::Category::APARTMENT, 250.0, 4));
     guestRepo->add(Guest(1, "Alice", "+123456789"));

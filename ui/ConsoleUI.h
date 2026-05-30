@@ -16,14 +16,13 @@ public:
 
     void run() {
         int choice;
-        // Исправлено: явное объявление как shared_ptr<PricingStrategy>
         std::shared_ptr<PricingStrategy> currentStrategy = std::make_shared<StandardPricing>();
 
         do {
             std::cout << "\n=== HOTEL SYSTEM WITH PATTERNS (SOLID) ===\n";
             std::cout << "1. Show rooms\n2. Show guests\n3. New booking\n";
             std::cout << "4. Confirm booking (State)\n5. Check in (State)\n6. Check out (State)\n7. Cancel booking (State)\n";
-            std::cout << "8. Calculate cost (Strategy)\n9. Change pricing strategy\n0. Exit\nChoice: ";
+            std::cout << "8. Calculate cost (Strategy)\n9. Change pricing strategy\n10. Show all bookings\n0. Exit\nChoice: ";
             std::cin >> choice;
 
             try {
@@ -37,6 +36,7 @@ public:
                     case 7: changeState("cancel"); break;
                     case 8: calculateCost(currentStrategy); break;
                     case 9: currentStrategy = chooseStrategy(); break;
+                    case 10: showAllBookings(); break;
                 }
             } catch (const HotelSystemException& e) {
                 std::cout << "Error: " << e.what() << "\n";
@@ -91,6 +91,20 @@ private:
         if (strat == 2) return std::make_shared<LoyaltyDiscountPricing>();
         if (strat == 3) return std::make_shared<HolidayPricing>();
         return std::make_shared<StandardPricing>();
+    }
+    void showAllBookings() {
+        auto bookings = bookingService->getAllBookings();
+        if (bookings.empty()) {
+            std::cout << "No bookings found.\n";
+            return;
+        }
+        std::cout << "\n=== ALL BOOKINGS ===\n";
+        for (const auto& b : bookings) {
+            std::cout << "Booking #" << b->getId() 
+                      << " | Room ID: " << b->getRoomId()
+                      << " | Guest ID: " << b->getGuestId()
+                      << " | State: " << b->getState() << "\n";
+        }
     }
 
     std::shared_ptr<BookingService> bookingService;
