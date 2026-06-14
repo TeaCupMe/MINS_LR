@@ -4,6 +4,7 @@
 #include <vector>
 #include <memory>
 #include <iostream>
+#include <cstring>
 
 class Observer {
 public:
@@ -33,6 +34,7 @@ public:
         observers.push_back(observer);
     }
     void notify(int id, const std::string& oldState, const std::string& newState) {
+        if (strcmp(oldState.c_str(), newState.c_str()) == 0) return;
         for (auto& obs : observers)
             obs->update(id, oldState, newState);
     }
