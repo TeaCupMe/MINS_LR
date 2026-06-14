@@ -5,9 +5,9 @@
 #include <string>
 #include <memory>
 
-class BookingContext; // forward declaration
+class BookingContext; // fd
 
-// Базовый класс состояния
+
 class BookingState {
 public:
     virtual ~BookingState() = default;
@@ -18,7 +18,6 @@ public:
     virtual std::string getName() const = 0;
 };
 
-// ---- Конкретные состояния (определены до BookingContext) ----
 class NewState : public BookingState {
 public:
     void confirm(BookingContext& ctx) override;
@@ -64,7 +63,7 @@ public:
     std::string getName() const override { return "Cancelled"; }
 };
 
-// ---- Контекст, управляющий состоянием ----
+
 class BookingContext {
 public:
     BookingContext(int bookingId) : bookingId(bookingId) {
@@ -82,7 +81,7 @@ private:
     std::shared_ptr<BookingState> currentState;
 };
 
-// ---- Реализации методов, которые используют BookingContext ----
+
 inline void NewState::confirm(BookingContext& ctx) {
     std::cout << "Booking " << ctx.getBookingId() << " confirmed.\n";
     ctx.setState(std::make_shared<ConfirmedState>());

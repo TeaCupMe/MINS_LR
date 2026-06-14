@@ -17,14 +17,14 @@ public:
 class LoyaltyDiscountPricing : public PricingStrategy {
 public:
     double calculate(double pricePerNight, long nights) const override {
-        return pricePerNight * nights * 0.9; // 10% discount
+        return pricePerNight * nights * 0.9; // -10%
     }
 };
 
 class HolidayPricing : public PricingStrategy {
 public:
     double calculate(double pricePerNight, long nights) const override {
-        return pricePerNight * nights * 1.3; // 30% surcharge
+        return pricePerNight * nights * 1.3; // +30%
     }
 };
 

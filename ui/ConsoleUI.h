@@ -20,7 +20,6 @@ public:
 
     void run() {
         int choice;
-        // Исправлено: явное объявление как shared_ptr<PricingStrategy>
         std::shared_ptr<PricingStrategy> currentStrategy = std::make_shared<StandardPricing>();
 
         do {
@@ -114,6 +113,7 @@ private:
         std::cin.ignore();
         std::getline(std::cin, message);
         reportManager->notifyAdmin(channel, message);
+
     }
 
     std::shared_ptr<BookingService> bookingService;
