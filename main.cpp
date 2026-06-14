@@ -1,5 +1,6 @@
 #include "ui/ConsoleUI.h"
 #include "services/BookingService.h"
+#include "services/HotelReportManager.h"
 #include "repositories.h"
 
 int main() {
@@ -14,7 +15,9 @@ int main() {
     guestRepo->add(Guest(2, "Bob",   "+987654321"));
 
     auto bookingService = std::make_shared<BookingService>(roomRepo, guestRepo, bookingRepo);
-    ConsoleUI ui(bookingService, roomRepo, guestRepo);
+    auto reportManager = std::make_shared<HotelReportManager>(
+        bookingRepo, roomRepo, guestRepo, bookingService);
+    ConsoleUI ui(bookingService, roomRepo, guestRepo, reportManager);
     ui.run();
 
     return 0;

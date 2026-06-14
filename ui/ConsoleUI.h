@@ -2,17 +2,21 @@
 #define CONSOLE_UI_H
 
 #include "../services/BookingService.h"
+#include "../services/HotelReportManager.h"
 #include "../patterns/strategy/PricingStrategy.h"
 #include <iostream>
 #include <memory>
 #include <chrono>
+#include <string>
 
 class ConsoleUI {
 public:
     ConsoleUI(std::shared_ptr<BookingService> service,
               std::shared_ptr<RoomRepository> roomRepo,
-              std::shared_ptr<GuestRepository> guestRepo)
-        : bookingService(service), roomRepo(roomRepo), guestRepo(guestRepo) {}
+              std::shared_ptr<GuestRepository> guestRepo,
+              std::shared_ptr<HotelReportManager> reportManager)
+        : bookingService(service), roomRepo(roomRepo), guestRepo(guestRepo),
+          reportManager(reportManager) {}
 
     void run() {
         int choice;
@@ -22,7 +26,8 @@ public:
             std::cout << "\n=== HOTEL SYSTEM WITH PATTERNS (SOLID) ===\n";
             std::cout << "1. Show rooms\n2. Show guests\n3. New booking\n";
             std::cout << "4. Confirm booking (State)\n5. Check in (State)\n6. Check out (State)\n7. Cancel booking (State)\n";
-            std::cout << "8. Calculate cost (Strategy)\n9. Change pricing strategy\n10. Show all bookings\n0. Exit\nChoice: ";
+            std::cout << "8. Calculate cost (Strategy)\n9. Change pricing strategy\n";
+            std::cout << "10. Hotel report\n11. Notify admin\n0. Exit\nChoice: ";
             std::cin >> choice;
 
             try {
@@ -36,7 +41,8 @@ public:
                     case 7: changeState("cancel"); break;
                     case 8: calculateCost(currentStrategy); break;
                     case 9: currentStrategy = chooseStrategy(); break;
-                    case 10: showAllBookings(); break;
+                    case 10: showFullReport(); break;
+                    case 11: sendAdminNotification(); break;
                 }
             } catch (const HotelSystemException& e) {
                 std::cout << "Error: " << e.what() << "\n";
@@ -92,24 +98,28 @@ private:
         if (strat == 3) return std::make_shared<HolidayPricing>();
         return std::make_shared<StandardPricing>();
     }
-    void showAllBookings() {
-        auto bookings = bookingService->getAllBookings();
-        if (bookings.empty()) {
-            std::cout << "No bookings found.\n";
-            return;
-        }
-        std::cout << "\n=== ALL BOOKINGS ===\n";
-        for (const auto& b : bookings) {
-            std::cout << "Booking #" << b->getId() 
-                      << " | Room ID: " << b->getRoomId()
-                      << " | Guest ID: " << b->getGuestId()
-                      << " | State: " << b->getState() << "\n";
-        }
+    void showFullReport() {
+        int mode;
+        std::cout << "Revenue mode: 1. Standard  2. Loyalty (-10%)  3. Holiday (+30%)\nChoice: ";
+        std::cin >> mode;
+        reportManager->printFullReport(mode);
+    }
+    void sendAdminNotification() {
+        int channel;
+        std::string message;
+        std::cout << "Channel: 1. Email  2. SMS  3. Console\nChoice: ";
+        std::cin >> channel;
+        std::cout << "Message: ";
+        std::cin.ignore();
+        std::getline(std::cin, message);
+        reportManager->notifyAdmin(channel, message);
+
     }
 
     std::shared_ptr<BookingService> bookingService;
     std::shared_ptr<RoomRepository> roomRepo;
     std::shared_ptr<GuestRepository> guestRepo;
+    std::shared_ptr<HotelReportManager> reportManager;
 };
 
 #endif
