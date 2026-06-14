@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+package hotel;
+
+message Empty {}
+
+message Room {
+  int32 id = 1;
+  string category = 2;
+  double price_per_night = 3;
+  int32 max_guests = 4;
+  bool available = 5;
+}
+
+message Guest {
+  int32 id = 1;
+  string name = 2;
+  string phone = 3;
+}
+
+message RoomList {
+  repeated Room rooms = 1;
+  bool success = 2;
+  string message = 3;
+}
+
+message GuestList {
+  repeated Guest guests = 1;
+  bool success = 2;
+  string message = 3;
+}
+
+message GetRoomRequest {
+  int32 room_id = 1;
+}
+
+message GetGuestRequest {
+  int32 guest_id = 1;
+}

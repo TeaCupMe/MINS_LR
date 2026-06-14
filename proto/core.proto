@@ -1,0 +1,71 @@
+syntax = "proto3";
+
+package hotel;
+
+import "common.proto";
+
+service CoreService {
+  rpc ListRooms(Empty) returns (RoomList);
+  rpc ListGuests(Empty) returns (GuestList);
+  rpc CreateBooking(CreateBookingRequest) returns (CreateBookingResponse);
+  rpc ChangeBookingState(ChangeStateRequest) returns (ChangeStateResponse);
+  rpc CalculateCost(CalculateCostRequest) returns (CalculateCostResponse);
+  rpc GetFullReport(ReportRequest) returns (ReportResponse);
+  rpc NotifyAdmin(NotifyRequest) returns (NotifyResponse);
+}
+
+message CreateBookingRequest {
+  int32 room_id = 1;
+  int32 guest_id = 2;
+  int64 check_in_unix = 3;
+  int64 check_out_unix = 4;
+}
+
+message CreateBookingResponse {
+  bool success = 1;
+  string message = 2;
+  int32 booking_id = 3;
+}
+
+message ChangeStateRequest {
+  int32 booking_id = 1;
+  string action = 2;
+}
+
+message ChangeStateResponse {
+  bool success = 1;
+  string message = 2;
+  string new_state = 3;
+}
+
+message CalculateCostRequest {
+  int32 booking_id = 1;
+  int32 strategy_type = 2;
+}
+
+message CalculateCostResponse {
+  bool success = 1;
+  string message = 2;
+  double cost = 3;
+}
+
+message ReportRequest {
+  int32 revenue_mode = 1;
+}
+
+message ReportResponse {
+  bool success = 1;
+  string message = 2;
+  string report_text = 3;
+}
+
+message NotifyRequest {
+  int32 channel = 1;
+  string message = 2;
+}
+
+message NotifyResponse {
+  bool success = 1;
+  string message = 2;
+  string notification_text = 3;
+}

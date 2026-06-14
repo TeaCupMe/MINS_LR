@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+package hotel;
+
+import "common.proto";
+
+service ReferenceService {
+  rpc ListRooms(Empty) returns (RoomList);
+  rpc GetRoom(GetRoomRequest) returns (Room);
+  rpc ListGuests(Empty) returns (GuestList);
+  rpc GetGuest(GetGuestRequest) returns (Guest);
+  rpc ValidateBooking(ValidateBookingRequest) returns (ValidateBookingResponse);
+  rpc SetRoomAvailability(SetAvailabilityRequest) returns (Empty);
+}
+
+message ValidateBookingRequest {
+  int32 room_id = 1;
+  int32 guest_id = 2;
+}
+
+message ValidateBookingResponse {
+  bool valid = 1;
+  string error_message = 2;
+  double price_per_night = 3;
+}
+
+message SetAvailabilityRequest {
+  int32 room_id = 1;
+  bool available = 2;
+}
